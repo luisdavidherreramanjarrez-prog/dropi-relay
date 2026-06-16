@@ -23,6 +23,28 @@ app.post('/order', async (req, res) => {
   }
 });
 
+const WOO_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBwLmRyb3BpLmNvOjgwIiwiaWF0IjoxNzgxNjIwODQ5LCJleHAiOjQ5MzcyOTQ0NDksIm5iZiI6MTc4MTYyMDg0OSwianRpIjoibVQyWlg5OFdvWERwaDVkbyIsInN1YiI6IjkyMzk4OSIsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEiLCJhdWQiOiJXT09DT01FUkNFIiwidG9rZW5fdHlwZSI6IklOVEVHUkFUSU9OUyIsIndiX2lkIjoxLCJpbnRlZ3JhdGlvbl90eXBlIjoiV09PQ09NRVJDRSIsImludGVncmF0aW9uX3R5cGVfaWQiOjEsImlwX3VybCI6W10sImludGVncmF0aW9uX3VybCI6Imx1aXNkYXZpZDEuYXBwLm44bi5jbG91ZCJ9.XyZGtBojm00yHe-_qYVcNRbvyNqkU4TffQpdFVQ5LRc';
+
+// Endpoint de prueba con token WooCommerce
+app.post('/order-woo', async (req, res) => {
+  try {
+    const response = await fetch('https://api.dropi.co/integrations/orders/myorders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'dropi-integration-key': WOO_TOKEN,
+        'Referer': 'https://luisdavid1.app.n8n.cloud',
+        'Origin': 'https://luisdavid1.app.n8n.cloud'
+      },
+      body: JSON.stringify(req.body)
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Proxy para explorar la API de Dropi: GET /dropi/any/path
 app.get('/dropi/*', async (req, res) => {
   const path = req.params[0];
