@@ -23,4 +23,24 @@ app.post('/order', async (req, res) => {
   }
 });
 
+// Proxy para explorar la API de Dropi: GET /dropi/any/path
+app.get('/dropi/*', async (req, res) => {
+  const path = req.params[0];
+  const qs = new URLSearchParams(req.query).toString();
+  const url = `https://api.dropi.co/${path}${qs ? '?' + qs : ''}`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'dropi-integration-key': DROPI_TOKEN,
+        'Referer': 'https://shopiestrategas-production.up.railway.app',
+        'Origin': 'https://shopiestrategas-production.up.railway.app'
+      }
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(process.env.PORT || 3000, () => console.log('Dropi relay running'));
