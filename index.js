@@ -1,0 +1,26 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+const DROPI_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBwLmRyb3BpLmNvOjgwIiwiaWF0IjoxNzgxNTUwNDM1LCJleHAiOjQ5MzcyMjQwMzUsIm5iZiI6MTc4MTU1MDQzNSwianRpIjoidXFuMVFwbnRhOXlMU01vNiIsInN1YiI6IjkyMzk4OSIsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEiLCJhdWQiOiJEcm9wUGFnZSIsInRva2VuX3R5cGUiOiJJTlRFR1JBVElPTlMiLCJ3Yl9pZCI6MSwiaW50ZWdyYXRpb25fdHlwZSI6IkRyb3BQYWdlIiwiaW50ZWdyYXRpb25fdHlwZV9pZCI6MTA0NywiaXBfdXJsIjpbeyJ1cmwiOiJlc3RyYXRlZ2FzaWEuY29tIiwiaXAiOm51bGx9LHsidXJsIjpudWxsLCJpcCI6IjIwOC43Ny4yNDQuMTUifSx7InVybCI6Imh0dHBzOi8vc2hvcGllc3RyYXRlZ2FzLXByb2R1Y3Rpb24udXAucmFpbHdheS5hcHAiLCJpcCI6bnVsbH1dLCJpbnRlZ3JhdGlvbl91cmwiOiIifQ.yNoy-wNADXRDrtyzAIlCIGXZabhckS7TMgCfojN_dVo';
+
+app.post('/order', async (req, res) => {
+  try {
+    const response = await fetch('https://api.dropi.co/integrations/orders/myorders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'dropi-integration-key': DROPI_TOKEN,
+        'Referer': 'https://shopiestrategas-production.up.railway.app',
+        'Origin': 'https://shopiestrategas-production.up.railway.app'
+      },
+      body: JSON.stringify(req.body)
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.listen(process.env.PORT || 3000, () => console.log('Dropi relay running'));
